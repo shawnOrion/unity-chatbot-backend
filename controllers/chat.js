@@ -1,6 +1,7 @@
 // controllers/chat.js
 const openai = require("./openai");
 const { format_message, get_response } = openai;
+const mongoose = require("mongoose");
 const Message = require("../models/message");
 const Chat = require("../models/chat");
 
@@ -31,7 +32,9 @@ async function CreateChat() {
   }
 }
 
-async function CreateUserMessage(content, chatId) {
+async function CreateUserMessage(content, chatIdStr) {
+  // convert the chatId to an ObjectId
+  const chatId = mongoose.Types.ObjectId(chatIdStr);
   const userMessage = {
     role: "user",
     content,
@@ -61,7 +64,7 @@ async function CreateChatbotMessage(chat) {
     const newMessageDoc = new Message({
       role: newMessage.role,
       content: newMessage.content,
-      chatId: chat._id,
+      chatId: mongoose.Types.ObjectId(chat._id),
     });
     await newMessageDoc.save();
     console.log("Created assistant message");
