@@ -2,7 +2,9 @@
 const openai = require("./openai");
 const { format_message, get_response } = openai;
 const Message = require("../models/message");
+const Chat = require("../models/chat");
 
+// TODO: remove this function and replace with GetChatMessages?
 async function GetMessages() {
   try {
     const messages = await Message.find();
@@ -17,13 +19,31 @@ async function GetMessages() {
   }
 }
 
+// async function CreateChat()
+async function CreateChat() {
+  try {
+    const chat = new Chat();
+    await chat.save();
+    return chat;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
 async function CreateChatMessage(userMessage) {
   try {
     const userMessageDoc = new Message(userMessage);
     await userMessageDoc.save();
-    // update log
-    console.log("Added user message");
-    const messages = await Message.find();
+    console.log("Created user message");
+
+    const chat = await Chat.findOneAndUpdate(
+      { _id: userMessage.chatId },
+      { $push: { messages: userMessageDoc._id } },
+      { new: true }
+    );
+    console.log("Added user message to chat");
+    const messages = await Message.find({ _id: { $in: chat.messages } });
     const formattedMessages = messages.map((message) =>
       format_message(message.role, message.content)
     );
@@ -33,10 +53,16 @@ async function CreateChatMessage(userMessage) {
     const newMessageDoc = new Message({
       role: newMessage.role,
       content: newMessage.content,
+      chatId: chat._id,
     });
     await newMessageDoc.save();
-    console.log("Added assistant message");
-
+    console.log("Created assistant message");
+    await Chat.findOneAndUpdate(
+      { _id: chat._id },
+      { $push: { messages: newMessageDoc._id } },
+      { new: true }
+    );
+    console.log("Added assistant message to chat");
     return newMessage;
   } catch (error) {
     console.error(error);
@@ -47,4 +73,5 @@ async function CreateChatMessage(userMessage) {
 module.exports = {
   CreateChatMessage,
   GetMessages,
+  CreateChat,
 };
