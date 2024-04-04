@@ -31,8 +31,8 @@ async function CreateChatMessage(userMessage) {
     const newMessage = await get_response(formattedMessages);
     console.log("Response: ", newMessage);
     const newMessageDoc = new Message({
-      role: "assistant",
-      content: newMessage,
+      role: newMessage.role,
+      content: newMessage.content,
     });
     await newMessageDoc.save();
     console.log("Added assistant message");
