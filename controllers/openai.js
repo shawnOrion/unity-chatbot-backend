@@ -15,11 +15,8 @@ async function get_response(messages) {
     messages: messages,
     model: "gpt-4-1106-preview",
   });
-  const message = format_message(
-    "assistant",
-    completion.data.choices[0].message.content
-  );
-  return message;
+  const content = completion.choices[0].message.content;
+  return format_message("assistant", content);
 }
 module.exports = {
   format_message,
