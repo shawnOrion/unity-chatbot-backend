@@ -52,7 +52,6 @@ router.post("/chat", async (req, res) => {
   }
 });
 
-// router GET chats
 router.get("/chats", async (req, res) => {
   try {
     const chats = await GetChats();

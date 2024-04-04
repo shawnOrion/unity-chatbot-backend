@@ -5,15 +5,14 @@ const mongoose = require("mongoose");
 const Message = require("../models/message");
 const Chat = require("../models/chat");
 
-// TODO: remove this function and replace with GetChatMessages?
-async function GetMessages() {
+async function GetMessages(messageIds) {
   try {
-    const messages = await Message.find();
-    // return map the messages to role and content
-    return messages.map((message) => ({
-      role: message.role,
-      content: message.content,
-    }));
+    // Log the list of message IDs
+    console.log("Message IDs: ", messageIds);
+    // Log the first message ID
+    console.log("First message ID: ", messageIds[0]);
+    const messages = await Message.find({ _id: { $in: messageIds } });
+    return messages;
   } catch (error) {
     console.error(error);
     throw error;
