@@ -64,7 +64,9 @@ router.get("/chats", async (req, res) => {
 
 router.get("/messages", async (req, res) => {
   try {
-    const messages = await GetMessages();
+    // should receive a chat
+    const { chat } = req.body;
+    const messages = await GetMessages(chat);
     res.json({ messages });
   } catch (error) {
     console.error(error);
