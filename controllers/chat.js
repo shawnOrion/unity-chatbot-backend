@@ -31,18 +31,26 @@ async function CreateChat() {
   }
 }
 
-async function CreateChatMessage(userMessage) {
-  try {
-    const userMessageDoc = new Message(userMessage);
-    await userMessageDoc.save();
-    console.log("Created user message");
+async function CreateUserMessage(content, chatId) {
+  const userMessage = {
+    role: "user",
+    content,
+    chatId,
+  };
+  const userMessageDoc = new Message(userMessage);
+  await userMessageDoc.save();
+  console.log("Created user message");
+  await Chat.findOneAndUpdate(
+    { _id: userMessage.chatId },
+    { $push: { messages: userMessageDoc._id } },
+    { new: true }
+  );
+  console.log("Added user message to chat");
+  return userMessageDoc;
+}
 
-    const chat = await Chat.findOneAndUpdate(
-      { _id: userMessage.chatId },
-      { $push: { messages: userMessageDoc._id } },
-      { new: true }
-    );
-    console.log("Added user message to chat");
+async function CreateChatbotMessage(chat) {
+  try {
     const messages = await Message.find({ _id: { $in: chat.messages } });
     const formattedMessages = messages.map((message) =>
       format_message(message.role, message.content)
@@ -71,7 +79,8 @@ async function CreateChatMessage(userMessage) {
 }
 
 module.exports = {
-  CreateChatMessage,
   GetMessages,
   CreateChat,
+  CreateUserMessage,
+  CreateChatbotMessage,
 };

@@ -2,9 +2,10 @@
 var express = require("express");
 var router = express.Router();
 const {
-  CreateChatMessage,
   GetMessages,
   CreateChat,
+  CreateUserMessage,
+  CreateChatbotMessage,
 } = require("../controllers/chat");
 const logger = require("../middleware/logger");
 
@@ -12,13 +13,27 @@ router.get("/", function (req, res, next) {
   res.render("index", { title: "Express" });
 });
 
-router.post("/message", logger, async (req, res) => {
+router.post("/user-message", logger, async (req, res) => {
   try {
     const { message } = req.body;
-    if (!message.role || !message.content || !message.chatId) {
+    if (!message.content || !message.chatId) {
       return res.status(400).json({ error: "Invalid message format" });
     }
-    const newMessage = await CreateChatMessage(message);
+    const newUserMessage = await CreateUserMessage(message);
+    res.json({ message: newUserMessage });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post("/chatbot-message", logger, async (req, res) => {
+  try {
+    const { chat } = req.body;
+    if (!chat.id || !chat.messages || !chat.title) {
+      return res.status(400).json({ error: "Invalid chat format" });
+    }
+    const newMessage = await CreateChatbotMessage(chat);
     res.json({ message: newMessage });
   } catch (error) {
     console.error(error);
