@@ -35,15 +35,15 @@ async function CreateChat() {
 async function CreateUserMessage(content, chatIdStr) {
   // convert the chatId to an ObjectId
   console.log("Creating user message");
-  const contentStr = content.toString();
   const chatId = new mongoose.Types.ObjectId(chatIdStr);
   console.log("ChatId: ", chatId);
-  console.log("Content: ", contentStr);
+  console.log("Content: ", content);
   const userMessage = {
     role: "user",
-    content: contentStr,
+    content,
     chatId,
   };
+  console.log("User message: ", userMessage);
   const userMessageDoc = new Message(userMessage);
   await userMessageDoc.save();
   console.log("Created user message");
