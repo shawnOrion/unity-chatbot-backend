@@ -55,16 +55,13 @@ async function CreateUserMessage(content, chatIdStr) {
   console.log("Added user message to chat");
   return {
     role: userMessageDoc.role,
-    content: userMessageDoc.content.toString(),
-    chatId: userMessageDoc.chatId.toString(),
+    content: contentStr,
+    chatId: userMessageDoc.chatId,
   };
 }
 
 async function CreateChatbotMessage(chat) {
   try {
-    for (let i = 0; i < chat.messages.length; i++) {
-      chat.messages[i] = new mongoose.Types.ObjectId(chat.messages[i]);
-    }
     const messages = await Message.find({ _id: { $in: chat.messages } });
     const formattedMessages = messages.map((message) =>
       format_message(message.role, message.content)
@@ -87,8 +84,8 @@ async function CreateChatbotMessage(chat) {
     console.log("Added assistant message to chat");
     return {
       role: newMessageDoc.role,
-      content: newMessageDoc.content.toString(),
-      chatId: newMessageDoc.chatId.toString(),
+      content: newMessageDoc.content,
+      chatId: newMessageDoc.chatId,
     };
   } catch (error) {
     console.error(error);
