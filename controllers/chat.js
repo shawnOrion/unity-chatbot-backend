@@ -20,6 +20,16 @@ async function GetMessages() {
   }
 }
 
+async function GetChats() {
+  try {
+    const chats = await Chat.find();
+    return chats;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
 // async function CreateChat()
 async function CreateChat() {
   try {
@@ -88,6 +98,7 @@ async function CreateChatbotMessage(chat) {
 
 module.exports = {
   GetMessages,
+  GetChats,
   CreateChat,
   CreateUserMessage,
   CreateChatbotMessage,

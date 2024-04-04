@@ -3,6 +3,7 @@ var express = require("express");
 var router = express.Router();
 const {
   GetMessages,
+  GetChats,
   CreateChat,
   CreateUserMessage,
   CreateChatbotMessage,
@@ -45,6 +46,17 @@ router.post("/chat", async (req, res) => {
   try {
     const chat = await CreateChat();
     res.json({ chat });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// router GET chats
+router.get("/chats", async (req, res) => {
+  try {
+    const chats = await GetChats();
+    res.json({ chats });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: error.message });
