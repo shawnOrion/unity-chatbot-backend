@@ -34,7 +34,9 @@ async function CreateChat() {
 
 async function CreateUserMessage(content, chatIdStr) {
   // convert the chatId to an ObjectId
-  const chatId = mongoose.Types.ObjectId(chatIdStr);
+  console.log("Creating user message");
+  const chatId = new mongoose.Types.ObjectId(chatIdStr);
+  console.log("ChatId: ", chatId);
   const userMessage = {
     role: "user",
     content,
@@ -64,7 +66,7 @@ async function CreateChatbotMessage(chat) {
     const newMessageDoc = new Message({
       role: newMessage.role,
       content: newMessage.content,
-      chatId: mongoose.Types.ObjectId(chat._id),
+      chatId: new mongoose.Types.ObjectId(chat._id),
     });
     await newMessageDoc.save();
     console.log("Created assistant message");
