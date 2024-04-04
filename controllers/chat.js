@@ -32,8 +32,9 @@ async function CreateChat() {
   }
 }
 
-async function CreateUserMessage(content, chatIdStr) {
-  // convert the chatId to an ObjectId
+async function CreateUserMessage(message) {
+  const content = message.content;
+  const chatIdStr = message.chatId;
   console.log("Creating user message");
   const chatId = new mongoose.Types.ObjectId(chatIdStr);
   console.log("ChatId: ", chatId);
