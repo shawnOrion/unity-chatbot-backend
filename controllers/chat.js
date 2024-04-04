@@ -5,8 +5,9 @@ const mongoose = require("mongoose");
 const Message = require("../models/message");
 const Chat = require("../models/chat");
 
-async function GetMessages(messageIds) {
+async function GetMessages(chat) {
   try {
+    const messageIds = chat.messages;
     // Log the list of message IDs
     console.log("Message IDs: ", messageIds);
     // Log the first message ID
