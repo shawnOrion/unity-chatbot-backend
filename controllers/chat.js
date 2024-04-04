@@ -53,7 +53,11 @@ async function CreateUserMessage(content, chatIdStr) {
     { new: true }
   );
   console.log("Added user message to chat");
-  return userMessageDoc;
+  return {
+    role: userMessageDoc.role,
+    content: userMessageDoc.content.toString(),
+    chatId: userMessageDoc.chatId.toString(),
+  };
 }
 
 async function CreateChatbotMessage(chat) {
@@ -78,7 +82,11 @@ async function CreateChatbotMessage(chat) {
       { new: true }
     );
     console.log("Added assistant message to chat");
-    return newMessage;
+    return {
+      role: newMessageDoc.role,
+      content: newMessageDoc.content.toString(),
+      chatId: newMessageDoc.chatId.toString(),
+    };
   } catch (error) {
     console.error(error);
     throw error;

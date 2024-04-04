@@ -33,8 +33,8 @@ router.post("/chatbot-message", logger, async (req, res) => {
     if (!chat._id || !chat.messages || !chat.title) {
       return res.status(400).json({ error: "Invalid chat format" });
     }
-    const newMessage = await CreateChatbotMessage(chat);
-    res.json({ message: newMessage });
+    const newChatbotMessage = await CreateChatbotMessage(chat);
+    res.json({ message: newChatbotMessage });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: error.message });
