@@ -13,7 +13,7 @@ class OpenAIService {
   }
 
   async createCompletion(messages) {
-    return await openai.chat.completions.create({
+    return await this.openai.chat.completions.create({
       messages: messages,
       model: "gpt-4-1106-preview",
     });
