@@ -3,6 +3,7 @@ var express = require("express");
 var router = express.Router();
 const {
   CreateUser,
+  GetUser,
   GetMessages,
   GetChats,
   CreateChat,
@@ -15,6 +16,8 @@ router.get("/", function (req, res, next) {
 });
 
 router.post("/user", CreateUser);
+
+router.get("/user", GetUser);
 
 router.post("/user-message", CreateUserMessage);
 
