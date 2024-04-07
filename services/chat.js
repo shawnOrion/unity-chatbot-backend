@@ -1,4 +1,5 @@
 // services/chat.js
+const User = require("../models/user");
 const Chat = require("../models/chat");
 const Message = require("../models/message");
 
@@ -27,10 +28,19 @@ class ChatService {
     }
   }
 
-  async CreateChat() {
+  async CreateChat(userId) {
     try {
-      const chat = new this.chat();
+      const user = await User.findById(userId);
+      const chat = new this.chat({
+        userId: user._id,
+      });
+
       await chat.save();
+      user.chats.push(chat._id);
+      await user.save();
+      console.log("Chat created successfully");
+      console.log("Chat: ", chat);
+      console.log("User: ", user);
       return chat;
     } catch (error) {
       console.error(error);
