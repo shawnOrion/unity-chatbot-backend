@@ -22,7 +22,7 @@ async function CreateUser(req, res) {
 
 async function GetUser(req, res) {
   try {
-    const { email } = req.params;
+    const { email } = req.body;
     console.log(`Getting user with email: ${email}`);
     const user = await User.findOne({ email });
     if (!user) {
