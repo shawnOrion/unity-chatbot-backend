@@ -24,7 +24,10 @@ class OpenAIService {
       this.formatMessage(message.role, message.content)
     );
     const completion = await this.createCompletion(formattedMessages);
-    return formatMessage("assistant", completion.choices[0].message.content);
+    return this.formatMessage(
+      "assistant",
+      completion.choices[0].message.content
+    );
   }
 }
 
