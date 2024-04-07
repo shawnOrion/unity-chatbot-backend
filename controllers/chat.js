@@ -6,8 +6,29 @@ const User = require("../models/user");
 // function to create user
 async function CreateUser(req, res) {
   try {
-    const user = new User();
+    const { email } = req.body;
+    console.log(`Creating user with email: ${email}`);
+    const user = new User({
+      email,
+      chats: [],
+    });
     await user.save();
+    res.json({ user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+}
+
+async function GetUser(req, res) {
+  try {
+    const { email } = req.params;
+    console.log(`Getting user with email: ${email}`);
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    console.log("User found: ", user);
     res.json({ user });
   } catch (error) {
     console.error(error);
@@ -93,6 +114,7 @@ async function CreateChatbotMessage(req, res) {
 
 module.exports = {
   CreateUser,
+  GetUser,
   GetMessages,
   GetChats,
   CreateChat,
