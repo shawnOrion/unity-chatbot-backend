@@ -1,6 +1,19 @@
 // controllers/chat.js
 const ChatService = require("../services/chat");
 const OpenAIService = require("../services/openai");
+const User = require("../models/user");
+
+// function to create user
+async function CreateUser(req, res) {
+  try {
+    const user = new User();
+    await user.save();
+    res.json({ user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+}
 
 async function CreateChat(req, res) {
   try {
@@ -77,6 +90,7 @@ async function CreateChatbotMessage(req, res) {
 }
 
 module.exports = {
+  CreateUser,
   GetMessages,
   GetChats,
   CreateChat,
