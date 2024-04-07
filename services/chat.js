@@ -2,6 +2,7 @@
 const User = require("../models/user");
 const Chat = require("../models/chat");
 const Message = require("../models/message");
+const mongoose = require("mongoose");
 
 class ChatService {
   constructor() {
