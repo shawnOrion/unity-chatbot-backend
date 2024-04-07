@@ -28,7 +28,8 @@ async function CreateChat(req, res) {
 
 async function GetChats(req, res) {
   try {
-    const chats = await ChatService.GetChats();
+    const { userId } = req.params;
+    const chats = await ChatService.GetChats(userId);
     res.json({ chats });
   } catch (error) {
     console.error(error);

@@ -22,7 +22,7 @@ router.post("/chatbot-message", CreateChatbotMessage);
 
 router.post("/chat/:userId", CreateChat);
 
-router.get("/chats", GetChats);
+router.get("/chats/:userId", GetChats);
 
 router.get("/messages", GetMessages);
 

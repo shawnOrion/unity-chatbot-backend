@@ -18,9 +18,10 @@ class ChatService {
     }
   }
 
-  async GetChats() {
+  async GetChats(userId) {
     try {
-      const chats = await this.chat.find();
+      const user = await User.findById(userId);
+      const chats = await this.chat.find({ userId: user._id });
       return chats;
     } catch (error) {
       console.error(error);
