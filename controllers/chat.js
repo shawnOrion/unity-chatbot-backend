@@ -8,6 +8,11 @@ async function CreateUser(req, res) {
   try {
     const { email } = req.body;
     console.log(`Creating user with email: ${email}`);
+    // check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ error: "User already exists" });
+    }
     const user = new User({
       email,
       chats: [],
