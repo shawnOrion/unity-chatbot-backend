@@ -1,32 +1,21 @@
-// routes/chat.js
 var express = require("express");
 var router = express.Router();
 const {
-  CreateUser,
-  GetUser,
-  GetMessages,
-  GetChats,
-  CreateChat,
-  CreateUserMessage,
-  CreateChatbotMessage,
+  getMessages,
+  getChats,
+  createChat,
+  createUserMessage,
+  createChatbotMessage,
 } = require("../controllers/chat");
 
-router.get("/", function (req, res, next) {
-  res.render("index", { title: "Express" });
-});
+router.post("/user-message", createUserMessage);
 
-router.post("/user", CreateUser);
+router.post("/chatbot-message", createChatbotMessage);
 
-router.get("/user", GetUser);
+router.post("/chat/:userId", createChat);
 
-router.post("/user-message", CreateUserMessage);
+router.get("/chats/:userId", getChats);
 
-router.post("/chatbot-message", CreateChatbotMessage);
-
-router.post("/chat/:userId", CreateChat);
-
-router.get("/chats/:userId", GetChats);
-
-router.get("/messages", GetMessages);
+router.get("/messages", getMessages);
 
 module.exports = router;

@@ -1,70 +1,76 @@
-// services/chat.js
 const User = require("../models/user");
 const Chat = require("../models/chat");
 const Message = require("../models/message");
 const mongoose = require("mongoose");
 
 class ChatService {
-  constructor() {
-    this.chat = Chat;
-  }
-  async GetMessages(chat) {
+  static async getMessages(chat) {
     try {
       const messageIds = chat.messages;
       const messages = await Message.find({ _id: { $in: messageIds } });
-      return messages;
+      return { messages, status: 200 };
     } catch (error) {
       console.error(error);
-      throw error;
+      return { error: error.message, status: 500 };
     }
   }
 
-  async GetChats(userId) {
+  static async getChats(userId) {
     try {
       const user = await User.findById(userId);
-      const chats = await this.chat.find({ userId: user._id });
-      return chats;
+      if (!user) {
+        return { error: "User not found", status: 404 };
+      }
+      const chats = await Chat.find({ userId: user._id });
+      return { chats, status: 200 };
     } catch (error) {
       console.error(error);
-      throw error;
+      return { error: error.message, status: 500 };
     }
   }
 
-  async CreateChat(userId) {
+  static async createChat(userId) {
     try {
       const user = await User.findById(userId);
-      const chat = new this.chat({
-        userId: user._id,
-      });
-
+      if (!user) {
+        return { error: "User not found", status: 404 };
+      }
+      const chat = new Chat({ userId: user._id });
       await chat.save();
       user.chats.push(chat._id);
       await user.save();
-      console.log("Chat created successfully");
-      console.log("Chat: ", chat);
-      console.log("User: ", user);
-      return chat;
+      console.log("Chat created successfully", { chat: chat, user: user });
+      return { chat, status: 201 };
     } catch (error) {
       console.error(error);
-      throw error;
+      return { error: error.message, status: 500 };
     }
   }
 
-  async UpdateChat(messageDoc) {
+  static async updateChat(messageDoc) {
     try {
-      return await Chat.findOneAndUpdate(
+      const updatedChat = await Chat.findOneAndUpdate(
         { _id: messageDoc.chatId },
         { $push: { messages: messageDoc._id } },
         { new: true }
       );
+      if (!updatedChat) {
+        return { error: "Chat not found", status: 404 };
+      }
+      return { updatedChat, status: 200 };
     } catch (error) {
       console.error(error);
-      throw error;
+      return { error: error.message, status: 500 };
     }
   }
 
-  async CreateMessage(role, content, chatId) {
+  static async createMessage(role, content, chatId) {
     try {
+      const chatExists = await Chat.findById(chatId);
+      if (!chatExists) {
+        return { error: "Chat not found", status: 404 };
+      }
+
       if (typeof chatId !== "object") {
         // in case chatId is a string
         chatId = new mongoose.Types.ObjectId(chatId);
@@ -74,12 +80,13 @@ class ChatService {
         content: content,
         chatId: chatId,
       });
-      return await newMessageDoc.save();
+      await newMessageDoc.save();
+      return { message: newMessageDoc, status: 201 };
     } catch (error) {
       console.error(error);
-      throw error;
+      return { error: error.message, status: 500 };
     }
   }
 }
 
-module.exports = new ChatService();
+module.exports = ChatService;
